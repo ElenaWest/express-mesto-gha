@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
+const routes = require('./routes');
 
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
@@ -21,8 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
+app.use(routes);
 
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
