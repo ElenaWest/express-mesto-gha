@@ -6,6 +6,7 @@ const {
 
 module.exports.addCard = (req, res) => {
   const { name, link } = req.body;
+
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
       Card.findById(card._id)
@@ -14,14 +15,13 @@ module.exports.addCard = (req, res) => {
         .catch(() => res.status(NOT_FOUND_STATUS).send({ message: 'Запрашиваемая карточка не найдена' }));
     })
     .catch((error) => {
-      if (error instanceof mongoose.Error.CastError) {
-        res.status(BAD_REQUEST_STATUS).send({ message: 'Некорректные данные карточки' });
+      if (error instanceof mongoose.Error.ValidationError) {
+        res.status(BAD_REQUEST_STATUS).send({ message: error.message });
       } else {
-        res.status(INTERNAL_SERVER_STATUS).send({ message: 'Произошла ошибка на сервере' });
+        res.status(INTERNAL_SERVER_STATUS).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
-
 module.exports.getCards = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])

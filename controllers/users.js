@@ -6,11 +6,12 @@ const {
 
 module.exports.addUser = (req, res) => {
   const { name, about, avatar } = req.body;
+
   User.create({ name, about, avatar })
     .then((user) => res.status(CREATED_STATUS).send(user))
     .catch((error) => {
-      if (error instanceof mongoose.Error.CastError) {
-        res.status(BAD_REQUEST_STATUS).send({ message: 'Указан некорректный id пользователя' });
+      if (error instanceof mongoose.Error.ValidationError) {
+        res.status(BAD_REQUEST_STATUS).send({ message: error.message });
       } else {
         res.status(INTERNAL_SERVER_STATUS).send({ message: 'Произошла ошибка на сервере' });
       }
@@ -46,7 +47,7 @@ module.exports.editUserData = (req, res) => {
     .then((user) => res.send(user))
     .catch((error) => {
       if (error instanceof mongoose.Error.ValidationError) {
-        res.status(BAD_REQUEST_STATUS).send({ message: 'Указан неверный id пользователя' });
+        res.status(BAD_REQUEST_STATUS).send({ message: error.message });
       } else if (error instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(NOT_FOUND_STATUS).send({ message: 'Запрашиваемый пользователь не найден' });
       } else {
@@ -61,7 +62,7 @@ module.exports.editUserAvatar = (req, res) => {
     .then((user) => res.send(user))
     .catch((error) => {
       if (error instanceof mongoose.Error.ValidationError) {
-        res.status(BAD_REQUEST_STATUS).send({ message: 'Указан неверный id пользователя' });
+        res.status(BAD_REQUEST_STATUS).send({ message: error.message });
       } else if (error instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(NOT_FOUND_STATUS).send({ message: 'Запрашиваемый пользователь не найден' });
       } else {
