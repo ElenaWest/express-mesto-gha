@@ -25,7 +25,6 @@ module.exports.addCard = (req, res) => {
 module.exports.getCards = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
-    .orFail()
     .then((cards) => res.send(cards))
     .catch(() => res.status(INTERNAL_SERVER_STATUS).send({ message: 'Произошла ошибка на сервере' }));
 };
