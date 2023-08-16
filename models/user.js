@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const URL_REGULAR = require('../utils/constants');
+const urlRegular = require('../utils/constants');
 const UnautorizedError = require('../errors/UnauthorizedError');
 // const ForbiddenError = require('../errors/ForbiddenError');
 
@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (url) => URL_REGULAR.test(url),
+      validator: (url) => urlRegular.test(url),
       message: 'Неправильно указан URL',
     },
   },

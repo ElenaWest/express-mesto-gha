@@ -3,7 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 const {
   getUsers, getUserById, editUserData, editUserAvatar, getMeUser,
 } = require('../controllers/users');
-const { URL_REGULAR } = require('../utils/constants');
+const { urlRegular } = require('../utils/constants');
 
 router.get('/', getUsers);
 router.get('/me', getMeUser);
@@ -23,7 +23,7 @@ router.patch('/me', celebrate({
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(URL_REGULAR),
+    avatar: Joi.string().pattern(urlRegular),
   }),
 }), editUserAvatar);
 
