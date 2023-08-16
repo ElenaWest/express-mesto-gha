@@ -1,11 +1,10 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { login } = require('../controllers/users');
-const EMAIL_REGULAR = require('../utils/constants');
 
 router.post('/', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().pattern(EMAIL_REGULAR),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(3),
   }),
 }), login);

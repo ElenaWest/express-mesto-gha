@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { URL_REGULAR, EMAIL_REGULAR } = require('../utils/constants');
+const URL_REGULAR = require('../utils/constants');
 const UnautorizedError = require('../errors/UnauthorizedError');
 // const ForbiddenError = require('../errors/ForbiddenError');
 
@@ -30,7 +30,9 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Поле должно быть заполнено'],
     unique: true,
     validate: {
-      validator: (email) => EMAIL_REGULAR.test(email),
+      validator(email) {
+        return /^\S+@\S+\.\S+$/.test(email);
+      },
       message: 'Неправильно указан email',
     },
   },
