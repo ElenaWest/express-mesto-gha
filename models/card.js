@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { urlRegular } = require('../utils/constants');
+const URL_REGEX = require('../utils/constants');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -12,7 +12,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Поле должно быть заполнено'],
     validate: {
-      validator: (url) => urlRegular.test(url),
+      validator: (url) => URL_REGEX.test(url),
       message: 'Неправильно указан URL',
     },
   },
