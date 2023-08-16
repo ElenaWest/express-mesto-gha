@@ -1,27 +1,62 @@
 const mongoose = require('mongoose');
-const { URL_REGULAR } = require('../utils/constants');
+const bcrypt = require('bcryptjs');
+const { URL_REGULAR, EMAIL_REGULAR } = require('../utils/constants');
+const UnautorizedError = require('../errors/UnauthorizedError');
+// const ForbiddenError = require('../errors/ForbiddenError');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    default: 'Жак-Ив Кусто',
     minlength: [2, 'Минимальная длина поля — 2 символа'],
     maxlength: [30, 'Максимальная длина поля — 30 символов'],
   },
   about: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    default: 'Исследователь',
     minlength: [2, 'Минимальная длина поля — 2 символа'],
     maxlength: [30, 'Максимальная длина поля — 30 символов'],
   },
   avatar: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (url) => URL_REGULAR.test(url),
       message: 'Неправильно указан URL',
     },
   },
+  email: {
+    type: String,
+    required: [true, 'Поле должно быть заполнено'],
+    unique: true,
+    validate: {
+      validator: (email) => EMAIL_REGULAR.test(email),
+      message: 'Неправильно указан email',
+    },
+  },
+  password: {
+    type: String,
+    required: [true, 'Поле должно быть заполнено'],
+    select: false,
+  },
 }, { versionKey: false });
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+  return this.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        // throw new ForbiddenError('Пользователь с указанным email не найден');
+        throw new UnautorizedError('Неправильные почта или пароль');
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new UnautorizedError('Неправильные почта или пароль');
+          }
+          return user;
+        });
+    });
+};
 
 module.exports = mongoose.model('user', userSchema);
