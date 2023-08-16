@@ -3,7 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 const {
   addCard, getCards, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
-const URL_REGULAR = require('../utils/constants');
+const { URL_REGULAR } = require('../utils/constants');
 
 router.post('/', celebrate({
   body: Joi.object().keys({
