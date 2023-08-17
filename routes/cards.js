@@ -5,18 +5,18 @@ const {
 } = require('../controllers/cards');
 const URL_REGEX = require('../utils/constants');
 
+router.get('/', getCards);
+
 router.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().pattern(URL_REGEX),
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().pattern(URL_REGEX),
   }),
 }), addCard);
 
-router.get('/', getCards);
-
 router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().length(24).hex().required(),
+    cardId: Joi.string().length(24).hex().required(),
   }),
 }), deleteCard);
 
