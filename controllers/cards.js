@@ -60,7 +60,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'TypeError') {
-        next(new NotFoundError('Карточка с указанными данными не найдена'));
+        next(new NotFoundError('Запрашиваемая карточка не найдена'));
       } else {
         next(error);
       }

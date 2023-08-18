@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const URL_REGEX = require('../utils/constants');
+const httpRegex = require('../utils/constants');
 const UnautorizedError = require('../errors/UnauthorizedError');
-// const ForbiddenError = require('../errors/ForbiddenError');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    default: 'Жак-Ив-Кусто',
+    default: 'Жак-Ив Кусто',
     minlength: [2, 'Минимальная длина поля — 2 символа'],
     maxlength: [30, 'Максимальная длина поля — 30 символов'],
   },
@@ -21,7 +20,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (url) => URL_REGEX.test(url),
+      validator(url) {
+        return httpRegex.test(url);
+      },
       message: 'Неправильно указан URL',
     },
   },
@@ -48,7 +49,6 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
     .select('+password')
     .then((user) => {
       if (!user) {
-        // throw new ForbiddenError('Пользователь с указанным email не найден');
         throw new UnautorizedError('Неправильные почта или пароль');
       }
       return bcrypt.compare(password, user.password)
